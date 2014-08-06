@@ -8,6 +8,7 @@ using namespace Rcpp;
 List nn2(NumericMatrix data, NumericMatrix query, const int k) {
 	const int d=data.ncol();
 	const int nd=data.nrow();
+	const int nq=query.nrow();
 	
 	ANNkd_tree	*the_tree;	// Search structure
 
@@ -24,11 +25,19 @@ List nn2(NumericMatrix data, NumericMatrix query, const int k) {
 	}
 	the_tree = new ANNkd_tree( data_pts, nd, d);
 	
+	// return values here
+	NumericMatrix rdists(nq, d);
+	IntegerVector ridx(nq, d);
+	
+	//now iterate over query points
+	ANNpoint pq = annAllocPt(d);
+	
+	annDeallocPt(pq);
 	annDeallocPts(data_pts);
 	delete the_tree;
 	delete [] nn_idx;
 	delete [] dists;
 
-	List z = List::create( data, query ) ;
+	List z = List::create( rdists, ridx);
 	return z ;
 }
