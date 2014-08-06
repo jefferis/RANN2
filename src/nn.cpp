@@ -4,9 +4,8 @@
 
 using namespace Rcpp;
 
-//' @export
 // [[Rcpp::export]]
-List nn2(NumericMatrix data, NumericMatrix query, const int k, const double eps=0.0) {
+List nn2_cpp(NumericMatrix data, NumericMatrix query, const int k, const double eps=0.0) {
 	const int d=data.ncol();
 	const int nd=data.nrow();
 	const int nq=query.nrow();

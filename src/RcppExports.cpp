@@ -5,9 +5,9 @@
 
 using namespace Rcpp;
 
-// nn2
-List nn2(NumericMatrix data, NumericMatrix query, const int k, const double eps = 0.0);
-RcppExport SEXP RANN2_nn2(SEXP dataSEXP, SEXP querySEXP, SEXP kSEXP, SEXP epsSEXP) {
+// nn2_cpp
+List nn2_cpp(NumericMatrix data, NumericMatrix query, const int k, const double eps = 0.0);
+RcppExport SEXP RANN2_nn2_cpp(SEXP dataSEXP, SEXP querySEXP, SEXP kSEXP, SEXP epsSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -16,7 +16,7 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< NumericMatrix >::type query(querySEXP );
         Rcpp::traits::input_parameter< const int >::type k(kSEXP );
         Rcpp::traits::input_parameter< const double >::type eps(epsSEXP );
-        List __result = nn2(data, query, k, eps);
+        List __result = nn2_cpp(data, query, k, eps);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
