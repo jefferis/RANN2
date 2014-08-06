@@ -4,6 +4,7 @@
 
 using namespace Rcpp;
 
+//' @export
 // [[Rcpp::export]]
 List nn2(NumericMatrix data, NumericMatrix query, const int k, const double eps=0.0) {
 	const int d=data.ncol();
@@ -26,8 +27,8 @@ List nn2(NumericMatrix data, NumericMatrix query, const int k, const double eps=
 	the_tree = new ANNkd_tree( data_pts, nd, d);
 	
 	// return values here
-	NumericMatrix rdists(nq, d);
-	IntegerVector ridx(nq, d);
+	NumericMatrix rdists(nq, k);
+	IntegerMatrix ridx(nq, k);
 	
 	//now iterate over query points
 	ANNpoint pq = annAllocPt(d);
@@ -59,6 +60,6 @@ List nn2(NumericMatrix data, NumericMatrix query, const int k, const double eps=
 	delete [] nn_idx;
 	delete [] dists;
 
-	List z = List::create( rdists, ridx);
+	List z = List::create(Rcpp::Named("nn.idx")=ridx, Rcpp::Named("nn.dists")=rdists);
 	return z ;
 }
