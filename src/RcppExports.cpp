@@ -5,14 +5,17 @@
 
 using namespace Rcpp;
 
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP RANN2_rcpp_hello_world() {
+// nn2
+List nn2(NumericMatrix data, NumericMatrix query, const int k);
+RcppExport SEXP RANN2_nn2(SEXP dataSEXP, SEXP querySEXP, SEXP kSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        List __result = rcpp_hello_world();
+        Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP );
+        Rcpp::traits::input_parameter< NumericMatrix >::type query(querySEXP );
+        Rcpp::traits::input_parameter< const int >::type k(kSEXP );
+        List __result = nn2(data, query, k);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
