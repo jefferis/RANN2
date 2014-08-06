@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List nn2(NumericMatrix data, NumericMatrix query, const int k) {
+List nn2(NumericMatrix data, NumericMatrix query, const int k, const double eps=0.0) {
 	const int d=data.ncol();
 	const int nd=data.nrow();
 	const int nq=query.nrow();
@@ -32,6 +32,22 @@ List nn2(NumericMatrix data, NumericMatrix query, const int k) {
 	//now iterate over query points
 	ANNpoint pq = annAllocPt(d);
 	
+	for(int i = 0; i < nq; i++)	// Run all query points against tree
+	{
+		// read coords of current query point
+		for(int j = 0; j < d; j++)
+		{
+			pq[j]=query(i,j);
+		}
+		
+		the_tree->annkSearch(	// search
+		pq,	// query point
+		k,		// number of near neighbors
+		nn_idx,		// nearest neighbors (returned)
+		dists,		// distance (returned)
+		eps);	// error bound
+	}
+
 	annDeallocPt(pq);
 	annDeallocPts(data_pts);
 	delete the_tree;
