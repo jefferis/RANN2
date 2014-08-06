@@ -46,6 +46,11 @@ List nn2(NumericMatrix data, NumericMatrix query, const int k, const double eps=
 		nn_idx,		// nearest neighbors (returned)
 		dists,		// distance (returned)
 		eps);	// error bound
+		for (int j = 0; j < k; j++)
+		{
+			rdists(i,j) = sqrt(dists[j]);	// unsquare distance
+			ridx(i,j) = nn_idx[j] + 1;	// put indices in returned array (nb +1 for R)
+		}
 	}
 
 	annDeallocPt(pq);
