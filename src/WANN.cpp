@@ -64,7 +64,44 @@ class WANN {
 		return z ;
 	}
 	
-	private:
+	List querySelf(const int k, const double eps=0.0) {
+		return queryW(this, k, eps);
+	}
+
+	List queryW(const WANN *query, const int k, const double eps=0.0) {
+		return queryW(query->data_pts, query->nd, k, eps);
+	}
+	
+	List queryW(const ANNpointArray query, const int nq, const int k, const double eps=0.0) {
+		ANNidxArray nn_idx 		= new ANNidx[k];		// Allocate near neigh indices
+		ANNdistArray dists 		= new ANNdist[k];		// Allocate near neighbor dists
+		// return values here
+		NumericMatrix rdists(nq, k);
+		IntegerMatrix ridx(nq, k);
+		
+		for(int i = 0; i < nq; i++)	// Run all query points against tree
+		{
+			the_tree->annkSearch(	// search
+			query[i],	// query point
+			k,		// number of near neighbors
+			nn_idx,		// nearest neighbors (returned)
+			dists,		// distance (returned)
+			eps);	// error bound
+			for (int j = 0; j < k; j++)
+			{
+				rdists(i,j) = sqrt(dists[j]);	// unsquare distance
+				ridx(i,j) = nn_idx[j] + 1;	// put indices in returned array (nb +1 for R)
+			}
+		}
+		
+		delete [] nn_idx;
+		delete [] dists;
+		
+		List z = List::create(Rcpp::Named("nn.idx")=ridx, Rcpp::Named("nn.dists")=rdists);
+		return z ;
+	}
+
+private:
 		ANNpointArray data_pts;
 		ANNkd_tree	*the_tree;
 		int d;
@@ -75,5 +112,6 @@ RCPP_MODULE(class_WANN) {
     class_<WANN>( "WANN" )
     .constructor<NumericMatrix>()
     .method( "query", &WANN::query )
+    .method( "querySelf", &WANN::querySelf )
     ;
 }
