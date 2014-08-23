@@ -102,6 +102,18 @@ class WANN {
 	}
 
 private:
+	NumericMatrix getPoints() {
+		NumericMatrix points(nd, d);
+		for(int i = 0; i < nd; i++)	// Run all query points against tree
+		{
+			for (int j = 0; j < d; j++)
+			{
+				points(i,j)=data_pts[i][j];
+			}
+		}
+		return points;
+	}
+	
 		ANNpointArray data_pts;
 		ANNkd_tree	*the_tree;
 		int d;
@@ -111,6 +123,7 @@ private:
 RCPP_MODULE(class_WANN) {
     class_<WANN>( "WANN" )
     .constructor<NumericMatrix>()
+    .method( "getPoints", &WANN::getPoints )
     .method( "query", &WANN::query )
     .method( "querySelf", &WANN::querySelf )
     ;
