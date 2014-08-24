@@ -2,6 +2,8 @@
 #include "ANN.h"     // ANN library header
 using namespace Rcpp;
 
+RCPP_EXPOSED_CLASS(WANN)
+
 class WANN {
 	public:
 	WANN(NumericMatrix data) {
@@ -72,6 +74,10 @@ class WANN {
 		return queryW(query->data_pts, query->nd, k, eps);
 	}
 	
+	List queryWANN(const WANN& query, const int k, const double eps=0.0) {
+		return queryW(query.data_pts, query.nd, k, eps);
+	}
+	
 	List queryW(const ANNpointArray query, const int nq, const int k, const double eps=0.0) {
 		ANNidxArray nn_idx 		= new ANNidx[k];		// Allocate near neigh indices
 		ANNdistArray dists 		= new ANNdist[k];		// Allocate near neighbor dists
@@ -125,6 +131,7 @@ RCPP_MODULE(class_WANN) {
     .constructor<NumericMatrix>()
     .method( "getPoints", &WANN::getPoints )
     .method( "query", &WANN::query )
+    .method( "queryWANN", &WANN::queryWANN )
     .method( "querySelf", &WANN::querySelf )
     ;
 }
