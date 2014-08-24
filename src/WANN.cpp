@@ -107,7 +107,7 @@ class WANN {
 		return z ;
 	}
 
-private:
+
 	NumericMatrix getPoints() {
 		NumericMatrix points(nd, d);
 		for(int i = 0; i < nd; i++)	// Run all query points against tree
@@ -120,6 +120,7 @@ private:
 		return points;
 	}
 	
+private:
 		ANNpointArray data_pts;
 		ANNkd_tree	*the_tree;
 		int d;
