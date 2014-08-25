@@ -67,18 +67,14 @@ class WANN {
   }
   
   List querySelf(const int k, const double eps=0.0) {
-    return queryW(this, k, eps);
-  }
-  
-  List queryW(const WANN *query, const int k, const double eps=0.0) {
-    return queryW(query->data_pts, query->n, k, eps);
+    return queryANN(data_pts, n, k, eps);
   }
   
   List queryWANN(const WANN& query, const int k, const double eps=0.0) {
-    return queryW(query.data_pts, query.n, k, eps);
+    return queryANN(query.data_pts, query.n, k, eps);
   }
   
-  List queryW(const ANNpointArray query, const int nq, const int k, const double eps=0.0) {
+  List queryANN(const ANNpointArray query, const int nq, const int k, const double eps=0.0) {
     
     // ANN style arrays to hold return values for one point
     ANNidxArray nn_idx = new ANNidx[k];
