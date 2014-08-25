@@ -69,7 +69,7 @@ class WANN {
 	List querySelf(const int k, const double eps=0.0) {
 		return queryW(this, k, eps);
 	}
-
+	
 	List queryW(const WANN *query, const int k, const double eps=0.0) {
 		return queryW(query->data_pts, query->nd, k, eps);
 	}
@@ -106,8 +106,8 @@ class WANN {
 		List z = List::create(Rcpp::Named("nn.idx")=ridx, Rcpp::Named("nn.dists")=rdists);
 		return z ;
 	}
-
-
+	
+	
 	NumericMatrix getPoints() {
 		NumericMatrix points(nd, d);
 		for(int i = 0; i < nd; i++)	// Run all query points against tree
@@ -120,11 +120,11 @@ class WANN {
 		return points;
 	}
 	
-private:
-		ANNpointArray data_pts;
-		ANNkd_tree	*the_tree;
-		int d;
-		int nd;
+	private:
+	ANNpointArray data_pts;
+	ANNkd_tree	*the_tree;
+	int d;
+	int nd;
 };
 
 RCPP_MODULE(class_WANN) {
