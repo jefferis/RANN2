@@ -6,7 +6,7 @@ RCPP_EXPOSED_CLASS(WANN)
 
 class WANN {
   public:
-  WANN(NumericMatrix data) {
+  WANN(NumericMatrix data, bool buildtree=true) : tree(0) {
     d=data.ncol();
     n=data.nrow();
     
@@ -20,15 +20,24 @@ class WANN {
       }
     }
     
-    tree = new ANNkd_tree( data_pts, n, d);
+    if(buildtree) build_tree();
   }
-  
+    
   ~WANN() {
     annDeallocPts(data_pts);
-    delete tree;
+    if(tree!=0) delete tree;
+  }
+  
+  void build_tree() {
+    if(tree==0) {
+      tree = new ANNkd_tree( data_pts, n, d);
+    }
   }
   
   List query(NumericMatrix query, const int k, const double eps=0.0) {
+    // build tree (in case we didn't already)
+    build_tree();
+    
     const int nq=query.nrow();
     // ANN style point and return arrays for one point
     ANNpoint pq = annAllocPt(d);
@@ -75,6 +84,9 @@ class WANN {
   }
   
   List queryANN(const ANNpointArray query, const int nq, const int k, const double eps=0.0) {
+    
+    // build tree (in case we didn't already)
+    build_tree();
     
     // ANN style arrays to hold return values for one point
     ANNidxArray nn_idx = new ANNidx[k];
@@ -127,6 +139,7 @@ class WANN {
 RCPP_MODULE(class_WANN) {
   class_<WANN>( "WANN" )
   .constructor<NumericMatrix>()
+  .constructor<NumericMatrix,bool>()
   .method( "getPoints", &WANN::getPoints )
   .method( "query", &WANN::query )
   .method( "queryWANN", &WANN::queryWANN )
