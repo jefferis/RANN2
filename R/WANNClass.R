@@ -1,0 +1,1 @@
+WANN <- setRcppClass("WANN")

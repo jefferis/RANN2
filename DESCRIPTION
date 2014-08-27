@@ -11,6 +11,9 @@ Description: Finds the k nearest neighbours for every point in a given dataset
     in O(N log N) time using Arya and Mount's ANN library (v1.1.3). This wrapper
     uses Rcpp to simplify access compared with the original RANN library.
 License: GPL (>=3)
+Depends:
+    R (>= 3.0.0),
+    methods
 Imports:
     Rcpp (>= 0.11.2)
 LinkingTo: Rcpp

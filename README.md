@@ -1,4 +1,14 @@
 # RANN2
+This package is an updated version of the **RANN** package, making use of the 
+Rcpp package. For basic use, there is little difference with original RANN 
+package although there are some small (typically 5-10%) speedups for certain 
+query/target size combinations. **RANN2** also includes experimental 
+functionality via `WANN` objects to:
+  * keep ANN points in memory to avoid repeated copying
+  * keep the ANN k-d tree in memory to avoid repeated building
+  * separate building the k-d tree from allocating the points
+  * permit very fast self queries
+  * permit queries of the points from one ANN tree against a second tree
 
 ## Installation
 Currently there isn't a released version on [CRAN](http://cran.r-project.org/).
@@ -19,3 +29,52 @@ devtools::install_github("jefferis/RANN2")
 ```
 
 Note: Windows users need [Rtools](http://www.murdoch-sutherland.com/Rtools/) and [devtools](http://CRAN.R-project.org/package=devtools) to install this way.
+
+## Use
+### Basic use
+The expectation is that for 90% of users the `nn2` function should be the only
+way that the library is used. This takes a target matrix of R points, copies them into
+an array used by ANN and builds a k-d tree. It then copies the query points in the 
+same way and adds some 
+
+### Advanced use
+**RANN2** adds `WANN` objects, which allow fine control of when the k-d tree is
+built and removed.
+
+```
+data(kcpoints)
+w1=WANN(kcpoints[[1]])
+library(microbenchmark)
+microbenchmark(w1sq<-w1$selfQuery(k=1,eps=0))
+microbenchmark(nn2(kcpoints[[1]],k=1))
+w2=WANN(kcpoints[[2]])
+# NB must pass the Cpp object not the reference class object
+w1$queryWANN(w2$.CppObject)
+```
+
+WANN objects will primarily be useful if you make repeated queries. You can also
+delay building the k-d tree:
+
+```
+w1=WANN(kcpoints[[1]])
+w1$selfQuery(k=1,eps=0)
+w1$build_tree()
+w1$delete_tree()
+```
+if only a fraction of the objects will need to be searched; the tree will
+automatically be built when it is queried. You can also explicitly control
+when the tree is built or deleted (for memory management). The tree is wrapped
+in an R reference class (R5) object which imposes a significant performance
+penalty for building small trees (< ~ 1000 points).
+
+### Changing ANN data types
+By default ANN uses `double`s for both points and returned distances. You can
+save space by changing this if you want. To do to this you must recompile after
+setting either `ANN_COORD_TYPE` or `ANN_DIST_TYPE` in `src/MAKEVARS` or 
+`MAKEVARS.win` as appropriate. e.g. 
+```
+PKG_CPPFLAGS=-I. -IANN -DRANN -DANN_COORD_TYPE=float
+```
+would switch to the use of floats for the main ANN coordinate type. Note however
+that the k-d tree itself appears to occupy ~ 2x the space of the underlying
+double coordinates.
