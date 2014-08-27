@@ -4,7 +4,7 @@
 #' @aliases RANN2
 #' @seealso \code{\link{nn2}}
 #' @useDynLib RANN2
-#' @import Rcpp
+#' @import Rcpp methods
 NULL
 
 #' List of 3 matrices containing 3D points from Drosophila neurons

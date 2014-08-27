@@ -2,4 +2,5 @@
 
 export(nn2)
 import(Rcpp)
+import(methods)
 useDynLib(RANN2)
