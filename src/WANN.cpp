@@ -148,6 +148,8 @@ RCPP_MODULE(class_WANN) {
   .constructor<NumericMatrix>()
   .constructor<NumericMatrix,bool>()
   .method( "getPoints", &WANN::getPoints )
+  .method( "build_tree", &WANN::build_tree )
+  .method( "delete_tree", &WANN::delete_tree )
   .method( "query", &WANN::query )
   .method( "queryWANN", &WANN::queryWANN )
   .method( "querySelf", &WANN::querySelf )
