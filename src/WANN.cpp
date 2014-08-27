@@ -25,7 +25,7 @@ class WANN {
     
   ~WANN() {
     annDeallocPts(data_pts);
-    if(tree!=0) delete tree;
+    delete_tree();
   }
   
   void build_tree() {
@@ -33,7 +33,14 @@ class WANN {
       tree = new ANNkd_tree( data_pts, n, d);
     }
   }
-  
+
+  void delete_tree() {
+    if(tree!=0) {
+      delete tree;
+      tree=0;
+    }
+  }
+
   List query(NumericMatrix query, const int k, const double eps=0.0) {
     // build tree (in case we didn't already)
     build_tree();
