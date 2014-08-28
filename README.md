@@ -1,4 +1,6 @@
 # RANN2
+[![Build Status](https://travis-ci.org/jefferis/RANN2.svg)](https://travis-ci.org/jefferis/RANN2)
+
 This package is an updated version of the **RANN** package, making use of the 
 Rcpp package. For basic use, there is little difference with original RANN 
 package although there are some small (typically 5-10%) speedups for certain 
