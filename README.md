@@ -1,5 +1,6 @@
 # RANN2
 [![Build Status](https://travis-ci.org/jefferis/RANN2.svg)](https://travis-ci.org/jefferis/RANN2)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 
 This package is an updated version of the **RANN** package, making use of the 
 Rcpp package. For basic use, there is little difference with original RANN 
