@@ -60,7 +60,7 @@ delay building the k-d tree:
 
 ```
 w1=WANN(kcpoints[[1]])
-w1$selfQuery(k=1,eps=0)
+w1$querySelf(k=1,eps=0)
 w1$build_tree()
 w1$delete_tree()
 ```
