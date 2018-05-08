@@ -60,7 +60,7 @@ w1$query(p2, 1, 0)
 # equivalent to
 nn2(p1, p2, k=1)
 
-Explicitly build or delete k-d tree
+# Explicitly build or delete k-d tree
 w1$build_tree()
 w1$delete_tree()
 }
