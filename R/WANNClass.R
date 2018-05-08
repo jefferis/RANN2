@@ -24,7 +24,6 @@
 #' \item  permit queries of the points from one ANN tree against a second tree
 #'
 #' }
-#' @name WANN
 #'
 #' @description Methods for WANN objects include
 #'
@@ -43,7 +42,10 @@
 #'   \item \code{objectPointer}
 #'
 #'   }
-#' @export
+#' @name WANN-class
+#' @aliases WANN
+#' @exportClass WANN
+#' @export WANN
 #' @examples
 #' p1=kcpoints[[1]]
 #' w1=WANN(p1)
