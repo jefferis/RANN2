@@ -14,16 +14,11 @@ functionality via `WANN` objects to:
   * permit queries of the points from one ANN tree against a second tree
 
 ## Installation
-Currently there isn't a released version on [CRAN](http://cran.r-project.org/).
+Currently there isn't a released version on [CRAN](https://cran.r-project.org/),
+although we are considering a submission when the package develops sufficiently
+distinct functionality from the original RANN package.
 
-### Released versions
-Released versions are available from our lab repository:
-
-```r
-install.packages("RANN2",repos='http://jefferislab.org/R',type='source')
-```
-
-### Bleeding Edge
+### Development version
 You can use the **devtools** package to install the development version:
 
 ```r
@@ -31,7 +26,7 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("jefferis/RANN2")
 ```
 
-Note: Windows users need [Rtools](http://www.murdoch-sutherland.com/Rtools/) and [devtools](http://CRAN.R-project.org/package=devtools) to install this way.
+Note: Windows users need [Rtools](http://www.murdoch-sutherland.com/Rtools/) and [devtools](https://cran.r-project.org/package=devtools) to install this way.
 
 ## Use
 ### Basic use
