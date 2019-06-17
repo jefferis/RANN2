@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include "ANN.h"     // ANN library header
+#include <ANN/ANN.h>     // ANN library header
 using namespace Rcpp;
 
 RCPP_EXPOSED_CLASS(WANN)

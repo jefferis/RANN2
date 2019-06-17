@@ -3,6 +3,9 @@ Type: Package
 Title: Fast Nearest Neighbour Search ('Rcpp' Wrapper of 'Arya' and Mount's 'libANN')
 Version: 0.1
 Author: Sunil Arya and David Mount (for ANN), Gregory Jefferis
+Authors@R: c(
+  person(given="Caio", family="Hamamura", role=c("ctb"))
+  )
 Copyright: ANN library is copyright University of Maryland and Sunil Arya and
     David Mount. See file COPYRIGHT for details.
 Maintainer: Gregory Jefferis <jefferis@gmail.com>
@@ -19,5 +22,5 @@ LinkingTo: Rcpp
 URL: https://github.com/jefferis/RANN2
 Suggests:
     testthat
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 LazyData: yes
