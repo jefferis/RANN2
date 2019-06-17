@@ -1,0 +1,104 @@
+---
+title: "nn2-timings"
+author: "Greg Jefferis"
+output: html_document
+---
+
+## Introduction
+
+This vignette gives some indication of how kd build and query times
+vary with the length of the query, target input data. These are based
+on real world data for Drosophila neurons 
+(see [Costa et al 2016](https://doi.org/10.1016/j.neuron.2016.06.012)).
+Since the data are large, they are not distributed with the package
+but may be obtained on request.
+
+```{r options, include=FALSE}
+# only run locally - this vignette takes a long time and
+# currently relies on some large (50 Mb) sample data.
+knitr::opts_chunk$set(eval=nzchar(Sys.getenv("RUN_RANN2_VIGNETTES")))
+```
+
+The data used here 
+
+```{r setup, message=FALSE}
+library(knitr)
+library(nat)
+rgl::setupKnitr()
+library(microbenchmark)
+library(RANN2)
+library(plyr)
+dps=readRDS("~/projects/ChiangReanalysis/data/dpscanon.rds")
+```
+
+```{r sample}
+set.seed(42)
+s=sample(dps,500)
+library(nat.nblast)
+np=neuron_pairs(s, n = 500)
+sl=sapply(s, function(x) nrow(x$points))
+np$query.len=sl[np$query]
+np$target.len=sl[np$target]
+```
+
+Let's investigate the build time for the kdtree of those neurons
+```{r buildtime, cache=TRUE}
+times=llply(np$target, function(n)
+  microbenchmark(nn2(s[[n]]$points,matrix(0,ncol=3,nrow=1), k=1), times = 20))
+```
+
+```{r model-buildtimes, message=FALSE}
+np$target.time=sapply(times,function(x) median(x$time)/1e6)
+library(ggplot2)
+qplot(target.len,target.time, data=np, ylab='Tree build time /ms') + 
+  scale_x_log10()+scale_y_log10()+geom_smooth()
+l=lm(target.time~target.len, data=np)
+l$coefficients[2]
+```
+
+So in conclusion, ~ 0.5 ms / 1000 points to build.
+
+For queries, total time will include build time, + query time depending O(n)
+on number of query points and O(n log n) on number of target points.
+
+```{r searchtime, cache=TRUE}
+times2=mlply(np, function(query, target, ...)
+  microbenchmark(nn2(s[[target]]$points,s[[query]]$points, k=1), times = 20))
+np$search.time=sapply(times2,function(x) median(x$time)/1e6)
+```
+
+```{r plot-searchtime, fig.width=7, fig.height=6, webgl=TRUE}
+with(np, plot3d(log2(query.len), log2(target.len), log2(search.time)))
+```
+
+```{r plot-searchtime-1-neuron}
+set.seed(421)
+s20=sample(s, 20)
+times3=llply(s20, function(query, ...)
+  microbenchmark(nn2(s20[[1]]$points,query$points, k=1), times = 20))
+df=data.frame(query=names(s20),target= names(s20)[1], stringsAsFactors = F)
+df$search.time=sapply(times3,function(x) median(x$time)/1e6)
+df$query.len=sl[df$query]
+qplot(query.len, search.time, data=df, ylab='Query time /ms') +
+  geom_smooth(method = 'lm')
+l=lm(search.time~query.len, data=df)
+```
+
+Slope is `r l$coefficients[2]`.
+
+```{r plot-searchtime-1-neuron-target}
+set.seed(421)
+s20=sample(s, 20)
+np40=neuron_pairs(s20[1:2],s20)
+times4=mlply(np40, function(target, query, ...)
+  microbenchmark(nn2(s20[[target]]$points, s20[[query]]$points, k=1), times = 20))
+
+np40$search.time=sapply(times4,function(x) median(x$time)/1e6)
+np40$target.len=sl[np40$target]
+np40$query.len=sl[np40$query]
+qplot(target.len, search.time, data=np40, ylab='Query time /ms') +
+  geom_smooth(method = 'lm')
+l=lm(search.time~target.len, data=np40)
+```
+
+Slope is `r l$coefficients[2]`.
