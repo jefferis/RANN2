@@ -2,8 +2,9 @@
 [![Build Status](https://travis-ci.org/jefferis/RANN2.svg)](https://travis-ci.org/jefferis/RANN2)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 
-This package is an updated version of the **RANN** package, making use of the 
-Rcpp package. For basic use, there is little difference with original RANN 
+This package is an updated version of the [RANN](https://cran.r-project.org/package=RANN) 
+package, making use of the Rcpp package. 
+For basic use, there is little difference with original RANN 
 package although there are some small (typically 5-10%) speedups for certain 
 query/target size combinations. **RANN2** also includes experimental 
 functionality via `WANN` objects to:
@@ -32,8 +33,8 @@ Note: Windows users need [Rtools](http://www.murdoch-sutherland.com/Rtools/) and
 ### Basic use
 The expectation is that for 90% of users the `nn2` function should be the only
 way that the library is used. This takes a target matrix of R points, copies them into
-an array used by ANN and builds a k-d tree. It then copies the query points in the 
-same way and adds some 
+an array used by ANN and builds a k-d tree. It then iterates over the query
+points, searching the tree one at a time.
 
 ### Advanced use
 **RANN2** adds `WANN` objects, which allow fine control of when the k-d tree is
