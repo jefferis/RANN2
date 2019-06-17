@@ -5,8 +5,10 @@ Version: 0.1
 Authors@R: c(
     person("Gregory","Jefferis", email="jefferis@gmail.com", 
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0587-9355")),
-    person("Sunil","Arya", role=c("aut", "cph")),
-    person("David","Mount", role=c("aut", "cph")),
+    person("Sunil","Arya", role=c("aut", "cph"),
+      comment = c(ORCID = "0000-0003-0939-4192")),
+    person("David","Mount", role=c("aut", "cph"), 
+      comment = c(ORCID = "0000-0002-3290-8932")),
     person("University of Maryland", role="cph",
       comment = "ANN library is copyright University of Maryland and Sunil Arya and
     David Mount. See file COPYRIGHT for details")
