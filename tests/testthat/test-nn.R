@@ -79,3 +79,8 @@ test_that("nn2 with bad data", {
   expect_is(nn2(m, k=1), 'list')
 })
 
+test_that("inputs with different dimensions", {
+  mat=matrix(rnorm(20), ncol=2)
+  vec=as.numeric(mat[,1])
+  expect_error(nn2(data = mat, query = vec, k=1), 'same dimensions')
+})

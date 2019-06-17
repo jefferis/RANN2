@@ -63,7 +63,7 @@ nn2 <- function(data, query=data, k=min(10,nrow(data)),eps=0.0)
   if(is.null(NQ)) NQ=length(data)
 
   # Check that both datasets have same dimensionality
-  if(query_dimension != query_dimension)
+  if(dimension != query_dimension)
     stop("Query and data tables must have same dimensions")
 
   if(k>ND)
