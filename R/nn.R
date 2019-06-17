@@ -23,7 +23,7 @@
 #'  \code{data}. \bold{d}, the number of columns, must be the same as
 #'  \code{data}. If missing, defaults to \code{data}.
 #'@param k The maximum number of nearest neighbours to compute. The default
-#'  value is set to the smaller of the number of columsn in data
+#'  value is set to the smaller of the number of columns in data
 #'@param eps Error bound: default of 0.0 implies exact nearest neighbour search
 #'@return A \code{list} of length 2 with elements:
 #'
@@ -63,7 +63,7 @@ nn2 <- function(data, query=data, k=min(10,nrow(data)),eps=0.0)
   if(is.null(NQ)) NQ=length(data)
 
   # Check that both datasets have same dimensionality
-  if(query_dimension != query_dimension)
+  if(dimension != query_dimension)
     stop("Query and data tables must have same dimensions")
 
   if(k>ND)

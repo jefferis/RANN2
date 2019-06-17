@@ -1,14 +1,20 @@
 Package: RANN2
 Type: Package
 Title: Fast Nearest Neighbour Search ('Rcpp' Wrapper of 'Arya' and Mount's 'libANN')
-Version: 0.1
-Author: Sunil Arya and David Mount (for ANN), Gregory Jefferis
+Version: 0.1.0.9000
 Authors@R: c(
-  person(given="Caio", family="Hamamura", role=c("ctb"))
-  )
-Copyright: ANN library is copyright University of Maryland and Sunil Arya and
-    David Mount. See file COPYRIGHT for details.
-Maintainer: Gregory Jefferis <jefferis@gmail.com>
+    person("Gregory","Jefferis", email="jefferis@gmail.com", 
+    role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0587-9355")),
+    person("Sunil","Arya", role=c("aut", "cph"),
+      comment = c(ORCID = "0000-0003-0939-4192")),
+    person("David","Mount", role=c("aut", "cph"), 
+      comment = c(ORCID = "0000-0002-3290-8932")),
+    person(given="Caio", family="Hamamura", role=c("ctb"),
+      comment = c(ORCID = "0000-0001-6149-5885")),
+    person("University of Maryland", role="cph",
+      comment = "ANN library is copyright University of Maryland and Sunil Arya and
+    David Mount. See file COPYRIGHT for details")
+    )
 Description: Finds the k nearest neighbours for every point in a given dataset
     in O(N log N) time using 'Arya' and Mount's 'ANN' library (v1.1.3). This wrapper
     uses 'Rcpp' to simplify access compared with the original 'RANN' package.
@@ -21,6 +27,9 @@ Imports:
 LinkingTo: Rcpp
 URL: https://github.com/jefferis/RANN2
 Suggests:
+    spelling,
     testthat
 RoxygenNote: 6.1.1
+Encoding: UTF-8
 LazyData: yes
+Language: en-GB

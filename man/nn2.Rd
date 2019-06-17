@@ -15,7 +15,7 @@ nn2(data, query = data, k = min(10, nrow(data)), eps = 0)
 \code{data}. If missing, defaults to \code{data}.}
 
 \item{k}{The maximum number of nearest neighbours to compute. The default
-value is set to the smaller of the number of columsn in data}
+value is set to the smaller of the number of columns in data}
 
 \item{eps}{Error bound: default of 0.0 implies exact nearest neighbour search}
 }

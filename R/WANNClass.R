@@ -4,7 +4,7 @@
 #'
 #' WANN objects will primarily be useful if you make repeated queries. You can
 #' also delay building the k-d tree if you are not sure if the object in
-#' question will be searched; the tree willautomatically be built when it is
+#' question will be searched; the tree will automatically be built when it is
 #' queried. You can also explicitly control when the tree is built or deleted
 #' (for memory management). The tree is wrapped in an R reference class (R5)
 #' object which imposes a significant performance penalty for building small
