@@ -4,4 +4,6 @@
 src/*.o
 src/*.so
 src/*.dll
+.vscode
 .Renviron
+*.a
