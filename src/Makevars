@@ -4,4 +4,4 @@ PKG_CPPFLAGS=-I. -I../inst/include -DRANN
 
 $(SHLIB): ../inst/lib/$(LIBNAME)
 ../inst/lib/$(LIBNAME):
-	($(AR) rcs $(LIBNAME) *.o; mkdir -p ../inst/lib; cp $(LIBNAME) ../inst/lib/$(LIBNAME); rm $(LIBNAME))
+	($(AR) -rcs $(LIBNAME) *.o; mkdir -p ../inst/lib; cp $(LIBNAME) ../inst/lib/$(LIBNAME); rm $(LIBNAME))
