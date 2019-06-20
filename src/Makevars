@@ -1,5 +1,7 @@
 PKG_CPPFLAGS=-I. -I../inst/include -DRANN
 
+LIBNAME=libRANN2.a
+
 .PHONY: ../inst/lib/$(LIBNAME)
 
 $(SHLIB): ../inst/lib/$(LIBNAME)
