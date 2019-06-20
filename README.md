@@ -1,6 +1,9 @@
 # RANN2
+<!-- badges: start -->
+[![Docs](https://img.shields.io/badge/docs-100%25-brightgreen.svg)](http://jefferis.github.io/RANN2/)
 [![Build Status](https://travis-ci.org/jefferis/RANN2.svg)](https://travis-ci.org/jefferis/RANN2)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+<!-- badges: end -->
 
 This package is an updated version of the [RANN](https://cran.r-project.org/package=RANN) 
 package, making use of the Rcpp package. 
