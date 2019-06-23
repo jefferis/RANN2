@@ -1,11 +1,9 @@
-PKG_NAME=RANN2
 PKG_LIBS=-lws2_32
 PKG_CXXFLAGS += -O3
 PKG_CPPFLAGS += -I. -I../inst/include -DWIN32 -DDLL_EXPORTS -DANN_NO_RANDOM -DRANN
-LIBNAME=lib$(PKG_NAME).a
 
-.PHONY: ../inst/lib/$(LIBNAME)
+LIBNAME=libRANN2.a
 
 $(SHLIB): ../inst/lib/$(LIBNAME)
-../inst/lib/$(LIBNAME):
-	($(AR) rcs $(LIBNAME) *.o; mkdir -p ../inst/lib; cp $(LIBNAME) ../inst/lib/$(LIBNAME); rm $(LIBNAME))
+../inst/lib/$(LIBNAME): ANN.o bd_fix_rad_search.o bd_pr_search.o bd_search.o bd_tree.o brute.o kd_dump.o kd_fix_rad_search.o kd_pr_search.o kd_search.o kd_split.o kd_tree.o kd_util.o
+	(mkdir -p ../inst/lib; $(AR) rcs $@ $^)
