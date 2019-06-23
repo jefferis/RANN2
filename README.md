@@ -80,3 +80,34 @@ PKG_CPPFLAGS=-I. -IANN -DRANN -DANN_COORD_TYPE=float
 would switch to the use of floats for the main ANN coordinate type. Note however
 that the k-d tree itself appears to occupy ~ 2x the space of the underlying
 double coordinates.
+
+### Linking and using ANN library
+This package compiles a static library for ANN and provides the headers for it.
+Developers can directly include them in their C++ code / Rcpp based package.
+
+#### Instructions
+
+1. `DESCRIPTION` file: 
+    ```
+    LinkingTo: RANN2
+    ```
+2. `src/Makevars` file: 
+    ```R
+    PKG_IMPORT=RANN2
+    PKG_HOME=`${R_HOME}/bin/Rscript -e 'cat(system.file(package=\"$(PKG_IMPORT)\"))'`
+    PKG_LIBS=-L$(PKG_HOME)/lib -l$(PKG_IMPORT)
+    ```
+3. `src/Makevars.win` file:
+    ```R
+    PKG_IMPORT=RANN2
+    PKG_HOME=`${R_HOME}/bin/Rscript -e 'cat(system.file(package=\"$(PKG_IMPORT)\"))'`
+    PKG_LIBS+=-L$(PKG_HOME)/lib -l$(PKG_IMPORT)
+
+    PKG_CPPFLAGS+=-DDLL_EXPORTS
+    ```
+4. Your `C++` file: 
+    ```C
+    #include <ANN.h>
+    ```
+    
+For usage example: [src/nn.cpp](https://github.com/jefferis/RANN2/blob/master/src/nn.cpp)
