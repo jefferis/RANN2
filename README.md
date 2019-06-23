@@ -109,4 +109,4 @@ This package compiles the static library for the ANN library and provides the he
     #include <ANN.h>
     ```
     
-For usage example: [src/ann.cpp](https://github.com/jefferis/RANN2/blob/master/src/nn.cpp)
+For usage example: [src/nn.cpp](https://github.com/jefferis/RANN2/blob/master/src/nn.cpp)
