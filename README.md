@@ -91,7 +91,7 @@ This package compiles the static library for the ANN library and provides the he
     ```R
     PKG_IMPORT=RANN2
     PKG_HOME=`${R_HOME}/bin/Rscript -e 'cat(system.file(package=\"$(PKG_IMPORT)\"))'`
-    PKG_LIBS+=-L$(PKG_HOME)/lib -l$(PKG_IMPORT)
+    PKG_LIBS=-L$(PKG_HOME)/lib -l$(PKG_IMPORT)
     ```
 1. `src/Makevars.win` file:
     ```R
