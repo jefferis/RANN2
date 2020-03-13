@@ -86,6 +86,10 @@ class WANN {
     return queryANN(data_pts, n, k, eps);
   }
   
+  List queryFRSelf(const int k, const double rad, const double eps=0.0) {
+    return queryFRANN(data_pts, n, k, rad, eps);
+  }
+
   List queryWANN(const WANN& query, const int k, const double eps=0.0) {
     return queryANN(query.data_pts, query.n, k, eps);
   }
@@ -123,6 +127,49 @@ class WANN {
     return z ;
   }
   
+  List queryFRANN(const ANNpointArray query, const int nq, const int k, const double rad, const double eps=0.0) {
+
+    // build tree (in case we didn't already)
+    build_tree();
+
+    // ANN style arrays to hold return values for one point
+    ANNidxArray nn_idx = new ANNidx[k];
+    ANNdistArray dists = new ANNdist[k];
+
+    // declare matrices for return values here
+    NumericMatrix rdists(nq, k);
+    IntegerMatrix ridx(nq, k);
+    IntegerVector rcounts(nq);
+
+    // Run all query points against tree
+    for(int i = 0; i < nq; i++)
+    {
+      rcounts(i) = tree->annkFRSearch(query[i], rad * rad, k, nn_idx, dists, eps);
+      for (int j = 0; j < k; j++)
+      {
+        // NB unsquare distance
+        rdists(i,j) = sqrt(dists[j]);
+        // put indices in returned array (nb +1 for R)
+        ridx(i,j) = nn_idx[j] + 1;
+      }
+    }
+
+    delete [] nn_idx;
+    delete [] dists;
+
+    if (k > 0) {
+      List z = List::create(
+        Rcpp::Named("nn.idx")=ridx,
+        Rcpp::Named("nn.dists")=rdists,
+        Rcpp::Named("nn.counts")=rcounts);
+      return z ;
+    } else {
+      List z = List::create(
+        Rcpp::Named("nn.counts")=rcounts);
+      return z ;
+    }
+  }
+
   
   NumericMatrix getPoints() {
     NumericMatrix points(n, d);
@@ -153,5 +200,6 @@ RCPP_MODULE(class_WANN) {
   .method( "query", &WANN::query )
   .method( "queryWANN", &WANN::queryWANN )
   .method( "querySelf", &WANN::querySelf )
+  .method( "queryFRSelf", &WANN::queryFRSelf )
   ;
 }
