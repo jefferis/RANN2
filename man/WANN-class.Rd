@@ -18,9 +18,7 @@ Methods for WANN objects include
 
   \item \code{querySelf}
 
-  \item \code{objectPointer}
-
-  \item \code{objectPointer}
+  \item \code{querySelf_FR}
 
   }
 }

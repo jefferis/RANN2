@@ -37,9 +37,7 @@
 #'
 #'   \item \code{querySelf}
 #'
-#'   \item \code{objectPointer}
-#'
-#'   \item \code{objectPointer}
+#'   \item \code{querySelf_FR}
 #'
 #'   }
 #' @name WANN-class
