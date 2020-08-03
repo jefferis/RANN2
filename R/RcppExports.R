@@ -5,3 +5,7 @@ nn2_cpp <- function(data, query, k, eps = 0.0) {
     .Call('_RANN2_nn2_cpp', PACKAGE = 'RANN2', data, query, k, eps)
 }
 
+nn2_fr_cpp <- function(data, query, radius, k, eps = 0.0) {
+    .Call('_RANN2_nn2_fr_cpp', PACKAGE = 'RANN2', data, query, radius, k, eps)
+}
+

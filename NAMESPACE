@@ -2,6 +2,7 @@
 
 export(WANN)
 export(nn2)
+export(nn2.fr)
 exportClasses(WANN)
 import(Rcpp)
 import(methods)

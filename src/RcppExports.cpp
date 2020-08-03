@@ -19,11 +19,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// nn2_fr_cpp
+List nn2_fr_cpp(NumericMatrix data, NumericMatrix query, const double radius, const int k, const double eps);
+RcppExport SEXP _RANN2_nn2_fr_cpp(SEXP dataSEXP, SEXP querySEXP, SEXP radiusSEXP, SEXP kSEXP, SEXP epsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type query(querySEXP);
+    Rcpp::traits::input_parameter< const double >::type radius(radiusSEXP);
+    Rcpp::traits::input_parameter< const int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< const double >::type eps(epsSEXP);
+    rcpp_result_gen = Rcpp::wrap(nn2_fr_cpp(data, query, radius, k, eps));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_class_WANN();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RANN2_nn2_cpp", (DL_FUNC) &_RANN2_nn2_cpp, 4},
+    {"_RANN2_nn2_fr_cpp", (DL_FUNC) &_RANN2_nn2_fr_cpp, 5},
     {"_rcpp_module_boot_class_WANN", (DL_FUNC) &_rcpp_module_boot_class_WANN, 0},
     {NULL, NULL, 0}
 };
