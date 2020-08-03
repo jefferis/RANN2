@@ -41,7 +41,7 @@ class WANN {
     }
   }
 
-  List query(NumericMatrix query, const int k, const double eps=0.0) {
+  List query(NumericMatrix query, const int k, const double eps=0.0, const double radius = NA_REAL) {
     // build tree (in case we didn't already)
     build_tree();
 
@@ -55,22 +55,49 @@ class WANN {
     NumericMatrix rdists(nq, k);
     IntegerMatrix ridx(nq, k);
 
-    // Run all query points against tree
-    for(int i = 0; i < nq; i++)
-    {
-      // read coords of current query point
-      for(int j = 0; j < d; j++)
-      {
-        pq[j]=query(i,j);
-      }
+    // By default, we do a normal k nearest neighbor search
+    if(R_IsNA(radius)) {
 
-      tree->annkSearch(pq, k, nn_idx, dists, eps);
-      for (int j = 0; j < k; j++)
-      {
-        // NB unsquare distance
-        rdists(i,j) = sqrt(dists[j]);
-        // put indices in returned array (nb +1 for R)
-        ridx(i,j) = nn_idx[j] + 1;
+      // Run all query points against tree
+      for(int i = 0; i < nq; i++) {
+
+        // read coords of current query point
+        for(int j = 0; j < d; j++) {
+          pq[j]=query(i,j);
+        }
+
+        tree->annkSearch(pq, k, nn_idx, dists, eps);
+
+        for (int j = 0; j < k; j++) {
+          // NB unsquare distance
+          rdists(i,j) = sqrt(dists[j]);
+          // put indices in returned array (nb +1 for R)
+          ridx(i,j) = nn_idx[j] + 1;
+        }
+      }
+    } else {
+      // if radius is set to some value other than R's NA, we perform
+      // a fixed radius k nearest neighbor search
+
+      const ANNdist sqRad = (ANNdist) (radius * radius);
+
+      // Run all query points against tree
+      for(int i = 0; i < nq; i++) {
+
+        tree -> annkFRSearch(
+            pq, // query point
+            sqRad, // squared radius
+            k, // number of near neighbors to return
+            nn_idx, // nearest neighbor array (modified)
+            dists, // dist to near neighbors (modified)
+            eps); // error bound
+
+        // Sometimes there are fewer than k neighbors in the radius
+        // In that case, set ANN's DIST_INF and NULL_ID to R's NA value
+        for (int j = 0; j < k; j++) {
+          rdists(i,j) = dists[j] == ANN_DIST_INF ? NA_REAL : std::sqrt(dists[j]);	// un-square distance
+          ridx(i,j) = nn_idx[j] == ANN_NULL_IDX ? NA_INTEGER : nn_idx[j] + 1;	// put indices in returned array (nb +1 for R)
+        }
       }
     }
 
@@ -82,15 +109,15 @@ class WANN {
     return z ;
   }
 
-  List querySelf(const int k, const double eps=0.0) {
-    return queryANN(data_pts, n, k, eps);
+  List querySelf(const int k, const double eps=0.0, const double radius = NA_REAL) {
+    return queryANN(data_pts, n, k, eps, radius);
   }
 
-  List queryWANN(const WANN& query, const int k, const double eps=0.0) {
-    return queryANN(query.data_pts, query.n, k, eps);
+  List queryWANN(const WANN& query, const int k, const double eps=0.0, const double radius = NA_REAL) {
+    return queryANN(query.data_pts, query.n, k, eps, radius);
   }
 
-  List queryANN(const ANNpointArray query, const int nq, const int k, const double eps=0.0) {
+  List queryANN(const ANNpointArray query, const int nq, const int k, const double eps=0.0, const double radius = NA_REAL) {
 
     // build tree (in case we didn't already)
     build_tree();
@@ -103,65 +130,46 @@ class WANN {
     NumericMatrix rdists(nq, k);
     IntegerMatrix ridx(nq, k);
 
-    // Run all query points against tree
-    for(int i = 0; i < nq; i++)
-    {
-      tree->annkSearch(query[i], k, nn_idx, dists, eps);
-      for (int j = 0; j < k; j++)
-      {
-        // NB unsquare distance
-        rdists(i,j) = sqrt(dists[j]);
-        // put indices in returned array (nb +1 for R)
-        ridx(i,j) = nn_idx[j] + 1;
+    // By default, we do a normal k nearest neighbor search
+    if(R_IsNA(radius)) {
+
+      // Run all query points against tree
+      for(int i = 0; i < nq; i++) {
+
+        tree -> annkSearch(query[i], k, nn_idx, dists, eps);
+
+        for (int j = 0; j < k; j++) {
+          // NB un-square distance
+          rdists(i,j) = std::sqrt(dists[j]);
+          // put indices in returned array (nb +1 for R)
+          ridx(i,j) = nn_idx[j] + 1;
+        }
       }
-    }
 
-    delete [] nn_idx;
-    delete [] dists;
+    } else {
 
-    List z = List::create(Rcpp::Named("nn.idx")=ridx, Rcpp::Named("nn.dists")=rdists);
-    return z ;
-  }
+      // if radius is set to some value other than R's NA, we perform
+      // a fixed radius k nearest neighbor search
 
-  List querySelf_FR(const double radius, const int k, const double eps=0.0) {
-    return queryANN_FR(data_pts, n, radius, k, eps);
-  }
+      const ANNdist sqRad = (ANNdist) (radius * radius);
 
-  List queryWANN_FR(const WANN& query, const double radius, const int k, const double eps=0.0) {
-    return queryANN_FR(query.data_pts, query.n, radius, k, eps);
-  }
+      // Run all query points against tree
+      for(int i = 0; i < nq; i++) {
 
-  List queryANN_FR(const ANNpointArray query, const int nq, const double radius, const int k, const double eps=0.0) {
+        tree -> annkFRSearch(
+            query[i], // query point
+                 sqRad, // squared radius
+                 k, // number of near neighbors to return
+                 nn_idx, // nearest neighbor array (modified)
+                 dists, // dist to near neighbors (modified)
+                 eps); // error bound
 
-    const ANNdist sqRad = (ANNdist) (radius * radius);
-
-    // build tree (in case we didn't already)
-    build_tree();
-
-    // ANN style arrays to hold return values for one point
-    ANNidxArray nn_idx = new ANNidx[k];
-    ANNdistArray dists = new ANNdist[k];
-
-    // declare matrices for return values here
-    NumericMatrix rdists(nq, k);
-    IntegerMatrix ridx(nq, k);
-
-    // Run all query points against tree
-    for(int i = 0; i < nq; i++) {
-
-      tree->annkFRSearch(
-          query[i], // query point
-               sqRad, // squared radius
-               k, // number of near neighbors to return
-               nn_idx, // nearest neighbor array (modified)
-               dists, // dist to near neighbors (modified)
-               eps); // error bound
-
-      // Sometimes there are fewer than k neighbors in the radius
-      // In that case, set ANN's DIST_INF and NULL_ID to R's NA value
-      for (int j = 0; j < k; j++) {
-        rdists(i,j) = dists[j] == ANN_DIST_INF ? NA_REAL : sqrt(dists[j]);	// unsquare distance
-        ridx(i,j) = nn_idx[j] == ANN_NULL_IDX ? NA_INTEGER : nn_idx[j] + 1;	// put indices in returned array (nb +1 for R)
+        // Sometimes there are fewer than k neighbors in the radius
+        // In that case, set ANN's DIST_INF and NULL_ID to R's NA value
+        for (int j = 0; j < k; j++) {
+          rdists(i,j) = dists[j] == ANN_DIST_INF ? NA_REAL : std::sqrt(dists[j]);	// un-square distance
+          ridx(i,j) = nn_idx[j] == ANN_NULL_IDX ? NA_INTEGER : nn_idx[j] + 1;	// put indices in returned array (nb +1 for R)
+        }
       }
     }
 
@@ -201,7 +209,5 @@ RCPP_MODULE(class_WANN) {
   .method( "query", &WANN::query )
   .method( "queryWANN", &WANN::queryWANN )
   .method( "querySelf", &WANN::querySelf )
-  .method( "queryWANN_FR", &WANN::queryWANN_FR )
-  .method( "querySelf_FR", &WANN::querySelf_FR )
   ;
 }

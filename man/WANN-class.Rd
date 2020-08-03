@@ -18,8 +18,6 @@ Methods for WANN objects include
 
   \item \code{querySelf}
 
-  \item \code{querySelf_FR}
-
   }
 }
 \details{
@@ -50,12 +48,20 @@ functionality to:
 \examples{
 p1=kcpoints[[1]]
 w1=WANN(p1)
+
 # 2 neighbours since the first neighbour will be a self match of each point
-w1sq=w1$querySelf(2,0)
+k <- 2
+# Disable fixed radius search
+radius <- NA
+# Find the exact nearest neighbors
+epsilon <- 0.0
+
+w1sq=w1$querySelf(k, epsilon, radius)
 w1sq$nn.dists[,2]
-w1$query(p1, 2, 0)
+w1$query(p1, k, epsilon, radius)
+
 p2=kcpoints[[2]]
-w1$query(p2, 1, 0)
+w1$query(p2, 1, epsilon, radius)
 # equivalent to
 nn2(p1, p2, k=1)
 
