@@ -48,19 +48,22 @@
 #'
 #' # 2 neighbours since the first neighbour will be a self match of each point
 #' k <- 2
-#' # Disable fixed radius search
-#' radius <- NA
 #' # Find the exact nearest neighbors
 #' epsilon <- 0.0
 #'
-#' w1sq=w1$querySelf(k, epsilon, radius)
+#' w1sq=w1$querySelf(k, epsilon)
 #' w1sq$nn.dists[,2]
-#' w1$query(p1, k, epsilon, radius)
+#' w1$query(p1, k, epsilon)
 #'
 #' p2=kcpoints[[2]]
-#' w1$query(p2, k = 1, epsilon, radius)
+#' w1$query(p2, k, epsilon)
 #' # equivalent to
-#' nn2(p1, p2, k = 1)
+#' nn2(p1, p2, k)
+#'
+#' # Fixed radius search
+#' w1$query_FR(p1, k, radius = 1, epsilon)
+#' # equivalent to
+#' nn2(p1, p2, k, radius = 1)
 #'
 #' # Explicitly build or delete k-d tree
 #' w1$build_tree()
