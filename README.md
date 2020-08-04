@@ -87,27 +87,27 @@ Developers can directly include them in their C++ code / Rcpp based package.
 
 #### Instructions
 
-1. `DESCRIPTION` file: 
-    ```
+`DESCRIPTION` file: 
+```
     LinkingTo: RANN2
-    ```
-2. `src/Makevars` file: 
-    ```R
+```
+`src/Makevars` file: 
+```sh
     PKG_IMPORT=RANN2
     PKG_HOME=`${R_HOME}/bin/Rscript -e 'cat(system.file(package=\"$(PKG_IMPORT)\"))'`
     PKG_LIBS=-L$(PKG_HOME)/lib -l$(PKG_IMPORT)
-    ```
-3. `src/Makevars.win` file:
-    ```R
+```
+`src/Makevars.win` file:
+```sh
     PKG_IMPORT=RANN2
     PKG_HOME=`${R_HOME}/bin/Rscript -e 'cat(system.file(package=\"$(PKG_IMPORT)\"))'`
     PKG_LIBS+=-L$(PKG_HOME)/lib -l$(PKG_IMPORT)
 
     PKG_CPPFLAGS+=-DDLL_EXPORTS
-    ```
-4. Your `C++` file: 
-    ```C
+```
+Your `C++` file: 
+```C
     #include <ANN.h>
-    ```
+```
     
 For usage example: [src/nn.cpp](https://github.com/jefferis/RANN2/blob/master/src/nn.cpp)
