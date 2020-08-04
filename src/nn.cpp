@@ -84,8 +84,10 @@ List nn2_cpp(NumericMatrix data, NumericMatrix query, const int k, const double 
 	    // Sometimes there are fewer than k neighbors in the radius
 	    // In that case, set ANN's DIST_INF and NULL_ID to R's NA value
 	    for (int j = 0; j < k; j++) {
-	      rdists(i,j) = dists[j] == ANN_DIST_INF ? NA_REAL : sqrt(dists[j]);	// un-square distance
-	      ridx(i,j) = nn_idx[j] == ANN_NULL_IDX ? NA_INTEGER : nn_idx[j] + 1;	// put indices in returned array (nb +1 for R)
+	      // un-square distance
+	      rdists(i,j) = dists[j] == ANN_DIST_INF ? NA_REAL : sqrt(dists[j]);
+	      // put indices in returned array (nb +1 for R)
+	      ridx(i,j) = nn_idx[j] == ANN_NULL_IDX ? NA_INTEGER : nn_idx[j] + 1;
 	    }
 	  }
 	}
