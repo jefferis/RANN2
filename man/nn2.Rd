@@ -4,7 +4,7 @@
 \alias{nn2}
 \title{Nearest Neighbour Search}
 \usage{
-nn2(data, query = data, k = min(10, nrow(data)), eps = 0)
+nn2(data, query = data, k = min(10, nrow(data)), eps = 0, radius = NA)
 }
 \arguments{
 \item{data}{An \bold{M} x \bold{d} data.frame or matrix, where each of the
@@ -18,6 +18,9 @@ nn2(data, query = data, k = min(10, nrow(data)), eps = 0)
 value is set to the smaller of the number of columns in data}
 
 \item{eps}{Error bound: default of 0.0 implies exact nearest neighbour search}
+
+\item{radius}{Optional: Set to some non-zero positive number to do a fixed radius
+nearest neighbour search}
 }
 \value{
 A \code{list} of length 2 with elements:
