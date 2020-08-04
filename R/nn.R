@@ -25,6 +25,8 @@
 #'@param k The maximum number of nearest neighbours to compute. The default
 #'  value is set to the smaller of the number of columns in data
 #'@param eps Error bound: default of 0.0 implies exact nearest neighbour search
+#'@param radius Optional: Set to some non-zero positive number to do a fixed radius
+#'nearest neighbour search
 #'@return A \code{list} of length 2 with elements:
 #'
 #'  \item{nn.idx}{A \bold{N} x \bold{k} integer \code{matrix} returning the near
@@ -50,7 +52,7 @@
 #'DATA <- data.frame(x1, x2)
 #'nearest <- nn2(DATA,DATA)
 #'@export
-nn2 <- function(data, query=data, k=min(10,nrow(data)),eps=0.0)
+nn2 <- function(data, query=data, k=min(10,nrow(data)), eps=0.0, radius = NA)
 {
   dimension	<- ncol(data)
   if(is.null(dimension)) dimension=1L
@@ -69,6 +71,12 @@ nn2 <- function(data, query=data, k=min(10,nrow(data)),eps=0.0)
   if(k>ND)
     stop("Cannot find more nearest neighbours than there are points")
 
+  if(eps < 0)
+    stop("Epsilon cannot be smaller than 0")
+
+  if(!is.na(radius) & radius <= 0)
+    stop("Radius must be some postive non-zero number")
+
   # Coerce to matrix form
   if(!is.matrix(data))
     data <- as.matrix(data, rownames.force = FALSE)
@@ -79,5 +87,6 @@ nn2 <- function(data, query=data, k=min(10,nrow(data)),eps=0.0)
     query <- as.matrix(query, rownames.force = FALSE)
   if(!length(query)) stop("no points in query!")
 
-  nn2_cpp(data, query=query, k=k, eps=eps)
+  nn2_cpp(data, query=query, k=k, eps=eps, radius=radius)
 }
+

@@ -8,29 +8,54 @@ test_that("constructing WANN and getting points", {
 })
 
 test_that("Basic queries", {
+
+  k <- 1
+  e <- 0
+
   p1=kcpoints[[1]]
   w1=WANN(p1)
-  w1sq=w1$querySelf(1,0)
+  w1sq=w1$querySelf(k = k, eps = e)
   expect_equivalent(w1sq$nn.dists, matrix(0, nrow(kcpoints[[1]])))
-  expect_equal(w1$query(p1, 1, 0), w1sq)
+  expect_equal(w1$query(p1, k = k, eps = e), w1sq)
   p2=kcpoints[[2]]
-  expect_equal(w1$query(p2, 1, 0), nn2(p1, p2, k=1))
+  expect_equal(w1$query(p2, k = k, eps = e), nn2(p1, p2, k = k))
+})
+
+test_that("Basic fixed radius queries", {
+
+  r <- 0.5
+  k <- 3
+  e <- 0
+
+  p1=kcpoints[[1]]
+  w1=WANN(p1)
+  w1sq=w1$querySelf_FR(k = k, radius = r, eps = e)
+  expect_equal(w1sq$nn.dists, nn2(p1, k = k, eps = e, radius = r)$nn.dists)
+
 })
 
 test_that("Queries using WANN objects", {
+
+  k <- 3
+  e <- 0
+
   p1=kcpoints[[1]]
   w1=WANN(p1)
   p2=kcpoints[[2]]
   w2=WANN(p2)
-  expect_equal(w1$queryWANN(w2$.CppObject, 1, 0), nn2(p1, p2, k=1))
+  expect_equal(w1$queryWANN(w2$.CppObject, k = k, eps = e), nn2(p1, p2, k = k))
 })
 
 test_that("Build and delete trees explicitly", {
+
+  k <- 3
+  e <- 0
+
   p1=kcpoints[[1]]
   w1=WANN(p1)
   p2=kcpoints[[2]]
   w2=WANN(p2)
-  expect_is(w1$querySelf(1, 0), 'list')
-  expect_is(w1$query(p2, 1, 0), 'list')
-  expect_is(w1$queryWANN(w2$.CppObject, 1, 0), 'list')
+  expect_is(w1$querySelf(k = k, eps = e), 'list')
+  expect_is(w1$query(p2, k = k, eps = e), 'list')
+  expect_is(w1$queryWANN(w2$.CppObject, k = k, eps = e), 'list')
 })
