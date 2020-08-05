@@ -1,10 +1,15 @@
-#' Wrapper for Arya and Mount's Approximate Nearest Neighbours (ANN) C++ library
-#'
 #' @name RANN2-package
 #' @aliases RANN2
 #' @seealso \code{\link{nn2}}
 #' @useDynLib RANN2
 #' @import Rcpp methods
+#' @keywords internal
+"_PACKAGE"
+
+# The following block is used by usethis to automatically manage
+# roxygen namespace tags. Modify with care!
+## usethis namespace: start
+## usethis namespace: end
 NULL
 
 #' List of 3 matrices containing 3D points from Drosophila neurons
