@@ -158,24 +158,37 @@ List WANN::queryANN_FR(const ANNpointArray query, const int nq, const int k, con
 
   const ANNdist sqRad = (ANNdist) (radius * radius);
 
+  const bool usefr = !R_IsNA(radius) && radius > 0.0;
+
   // Run all query points against tree
   for(int i = 0; i < nq; i++) {
 
-    tree -> annkFRSearch(
+    if(usefr) {
+      tree -> annkFRSearch(
         query[i], // query point
-             sqRad, // squared radius
-             k, // number of near neighbors to return
-             nn_idx, // nearest neighbor array (modified)
-             dists, // dist to near neighbors (modified)
-             eps); // error bound
+        sqRad, // squared radius
+        k, // number of near neighbors to return
+        nn_idx, // nearest neighbor array (modified)
+        dists, // dist to near neighbors (modified)
+        eps); // error bound
+    } else {
+      tree -> annkSearch(query[i], k, nn_idx, dists, eps);
+    }
 
     // Sometimes there are fewer than k neighbors in the radius
     // In that case, set ANN's DIST_INF and NULL_ID to R's NA value
     for (int j = 0; j < k; j++) {
       // un-square distance
-      rdists(i,j) = dists[j] == ANN_DIST_INF ? NA_REAL : std::sqrt(dists[j]);
-      // put indices in returned array (nb +1 for R)
-      ridx(i,j) = nn_idx[j] == ANN_NULL_IDX ? NA_INTEGER : nn_idx[j] + 1;
+      if(usefr) {
+        rdists(i,j) = dists[j] == ANN_DIST_INF ? NA_REAL : std::sqrt(dists[j]);
+        // put indices in returned array (nb +1 for R)
+        ridx(i,j) = nn_idx[j] == ANN_NULL_IDX ? NA_INTEGER : nn_idx[j] + 1;
+      } else {
+        // NB un-square distance
+        rdists(i,j) = std::sqrt(dists[j]);
+        // put indices in returned array (nb +1 for R)
+        ridx(i,j) = nn_idx[j] + 1;
+      }
     }
   }
 
