@@ -37,24 +37,23 @@ public:
   List query_FR(NumericMatrix query, const int k, const double radius, const double eps=0.0);
 
   List querySelf(const int k, const double eps=0.0) {
-    return queryANN(data_pts, n, k, eps);
+    return queryANN_FR(data_pts, n, k, eps);
   }
 
   List queryWANN(const WANN& query, const int k, const double eps=0.0) {
-    return queryANN(query.data_pts, query.n, k, eps);
+    return queryANN_FR(query.data_pts, query.n, k, eps);
   }
 
-  List queryANN(const ANNpointArray query, const int nq, const int k, const double eps=0.0);
-
   List querySelf_FR(const int k, const double radius, const double eps=0.0) {
-    return queryANN_FR(data_pts, n, k, radius, eps);
+    return queryANN_FR(data_pts, n, k, eps, radius);
   }
 
   List queryWANN_FR(const WANN& query, const int k, const double radius, const double eps=0.0) {
-    return queryANN_FR(query.data_pts, query.n, k, radius, eps);
+    return queryANN_FR(query.data_pts, query.n, k, eps, radius);
   }
 
-  List queryANN_FR(const ANNpointArray query, const int nq, const int k, const double radius, const double eps=0.0);
+  List queryANN_FR(const ANNpointArray query, const int nq, const int k,
+                   const double eps=0.0, const double radius=0.0);
 
   NumericMatrix getPoints() {
     NumericMatrix points(n, d);

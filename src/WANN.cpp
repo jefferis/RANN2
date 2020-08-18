@@ -110,40 +110,8 @@ List WANN::query_FR(NumericMatrix query, const int k, const double radius, const
   return z ;
 }
 
-List WANN::queryANN(const ANNpointArray query, const int nq, const int k, const double eps) {
-
-  // build tree (in case we didn't already)
-  build_tree();
-
-  // ANN style arrays to hold return values for one point
-  ANNidxArray nn_idx = new ANNidx[k];
-  ANNdistArray dists = new ANNdist[k];
-
-  // declare matrices for return values here
-  NumericMatrix rdists(nq, k);
-  IntegerMatrix ridx(nq, k);
-
-  // Run all query points against tree
-  for(int i = 0; i < nq; i++) {
-
-    tree -> annkSearch(query[i], k, nn_idx, dists, eps);
-
-    for (int j = 0; j < k; j++) {
-      // NB un-square distance
-      rdists(i,j) = std::sqrt(dists[j]);
-      // put indices in returned array (nb +1 for R)
-      ridx(i,j) = nn_idx[j] + 1;
-    }
-  }
-
-  delete [] nn_idx;
-  delete [] dists;
-
-  List z = List::create(Rcpp::Named("nn.idx")=ridx, Rcpp::Named("nn.dists")=rdists);
-  return z ;
-}
-
-List WANN::queryANN_FR(const ANNpointArray query, const int nq, const int k, const double radius, const double eps) {
+List WANN::queryANN_FR(const ANNpointArray query, const int nq, const int k,
+                       const double eps, const double radius) {
 
   // build tree (in case we didn't already)
   build_tree();
