@@ -32,7 +32,9 @@ public:
       tree=0;
     }
   }
-  List query(NumericMatrix query, const int k, const double eps=0.0);
+  List query(NumericMatrix query, const int k, const double eps=0.0) {
+    return query_FR(query, k, 0.0, eps);
+  }
 
   List query_FR(NumericMatrix query, const int k, const double radius, const double eps=0.0);
 
