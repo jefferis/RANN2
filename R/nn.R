@@ -25,8 +25,9 @@
 #'@param k The maximum number of nearest neighbours to compute. The default
 #'  value is set to the smaller of the number of columns in data
 #'@param eps Error bound: default of 0.0 implies exact nearest neighbour search
-#'@param radius Optional: Set to some non-zero positive number to do a fixed radius
-#'nearest neighbour search
+#'@param radius Optional: Only return points within a fixed radius.
+#'  A negative number will return a \code{list} of variable length \code{vectors}
+#'  rather than a \code{matrix} of width k.
 #'@return A \code{list} of length 2 with elements:
 #'
 #'  \item{nn.idx}{A \bold{N} x \bold{k} integer \code{matrix} returning the near
@@ -74,9 +75,6 @@ nn2 <- function(data, query=data, k=min(10,nrow(data)), eps=0.0, radius = NA)
   if(eps < 0)
     stop("Epsilon cannot be smaller than 0")
 
-  if(!is.na(radius) & radius <= 0)
-    stop("Radius must be some postive non-zero number")
-
   # Coerce to matrix form
   if(!is.matrix(data))
     data <- as.matrix(data, rownames.force = FALSE)
@@ -89,4 +87,3 @@ nn2 <- function(data, query=data, k=min(10,nrow(data)), eps=0.0, radius = NA)
 
   nn2_cpp(data, query=query, k=k, eps=eps, radius=radius)
 }
-

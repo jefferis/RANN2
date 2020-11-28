@@ -38,6 +38,8 @@ public:
 
   List query_FR(NumericMatrix query, const int k, const double radius, const double eps=0.0);
 
+  List query_FR_ragged(NumericMatrix query, const int k, const double radius, const double eps=0.0);
+
   List querySelf(const int k, const double eps=0.0) {
     return queryANN_FR(data_pts, n, k, eps);
   }

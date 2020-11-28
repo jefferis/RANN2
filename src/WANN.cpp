@@ -46,12 +46,12 @@ List WANN::query_FR(NumericMatrix query, const int k, const double radius, const
     }
     if(usefr) {
       tree -> annkFRSearch(
-        pq, // query point
-        sqRad, // squared radius
-        k, // number of near neighbors to return
-        nn_idx, // nearest neighbor array (modified)
-        dists, // dist to near neighbors (modified)
-        eps); // error bound
+          pq, // query point
+          sqRad, // squared radius
+          k, // number of near neighbors to return
+          nn_idx, // nearest neighbor array (modified)
+          dists, // dist to near neighbors (modified)
+          eps); // error bound
     } else {
       tree->annkSearch(pq, k, nn_idx, dists, eps);
     }
@@ -69,6 +69,60 @@ List WANN::query_FR(NumericMatrix query, const int k, const double radius, const
         ridx(i,j) = nn_idx[j] + 1;
       }
     }
+  }
+
+  annDeallocPt(pq);
+  delete [] nn_idx;
+  delete [] dists;
+
+  List z = List::create(Rcpp::Named("nn.idx")=ridx, Rcpp::Named("nn.dists")=rdists);
+  return z ;
+}
+
+List WANN::query_FR_ragged(NumericMatrix query, const int k, const double radius, const double eps) {
+  // build tree (in case we didn't already)
+  build_tree();
+
+  const int nq=query.nrow();
+  // ANN style point and return arrays for one point
+  ANNpoint pq = annAllocPt(d);
+  ANNidxArray nn_idx = new ANNidx[k];
+  ANNdistArray dists = new ANNdist[k];
+
+  // declare lists for return values here
+  List rdists(nq);
+  List ridx(nq);
+
+  const ANNdist sqRad = (ANNdist) (radius * radius);
+
+  // Run all query points against tree
+  for(int i = 0; i < nq; i++) {
+
+    // read coords of current query point
+    for(int j = 0; j < d; j++) {
+      pq[j]=query(i,j);
+    }
+    int npts = 0;
+    npts = tree -> annkFRSearch(
+      pq, // query point
+      sqRad, // squared radius
+      k, // number of near neighbors to return
+      nn_idx, // nearest neighbor array (modified)
+      dists, // dist to near neighbors (modified)
+      eps); // error bound
+
+    // creates the vectors to contain the distances and indices
+    std::vector<double> rdists_element(npts);
+    std::vector<int> ridx_element(npts);
+    for (int j = 0; j < npts; j++) {
+      // un-square distance
+      rdists_element[j] = std::sqrt(dists[j]);
+      // put indices in returned array (nb +1 for R)
+      ridx_element[j] = nn_idx[j] + 1;
+    }
+    // adds the distances and indices to the output ragged lists
+    rdists[i] = rdists_element;
+    ridx[i] = ridx_element;
   }
 
   annDeallocPt(pq);
@@ -102,12 +156,12 @@ List WANN::queryANN_FR(const ANNpointArray query, const int nq, const int k,
 
     if(usefr) {
       tree -> annkFRSearch(
-        query[i], // query point
-        sqRad, // squared radius
-        k, // number of near neighbors to return
-        nn_idx, // nearest neighbor array (modified)
-        dists, // dist to near neighbors (modified)
-        eps); // error bound
+          query[i], // query point
+               sqRad, // squared radius
+               k, // number of near neighbors to return
+               nn_idx, // nearest neighbor array (modified)
+               dists, // dist to near neighbors (modified)
+               eps); // error bound
     } else {
       tree -> annkSearch(query[i], k, nn_idx, dists, eps);
     }
@@ -138,18 +192,19 @@ List WANN::queryANN_FR(const ANNpointArray query, const int nq, const int k,
 
 RCPP_EXPOSED_CLASS(WANN)
 
-RCPP_MODULE(class_WANN) {
-  class_<WANN>( "WANN" )
-  .constructor<NumericMatrix>()
-  .constructor<NumericMatrix,bool>()
-  .method( "getPoints", &WANN::getPoints )
-  .method( "build_tree", &WANN::build_tree )
-  .method( "delete_tree", &WANN::delete_tree )
-  .method( "query", &WANN::query )
-  .method( "queryWANN", &WANN::queryWANN )
-  .method( "querySelf", &WANN::querySelf )
-  .method( "query_FR", &WANN::query_FR )
-  .method( "queryWANN_FR", &WANN::queryWANN_FR )
-  .method( "querySelf_FR", &WANN::querySelf_FR )
-  ;
-}
+  RCPP_MODULE(class_WANN) {
+    class_<WANN>( "WANN" )
+    .constructor<NumericMatrix>()
+    .constructor<NumericMatrix,bool>()
+    .method( "getPoints", &WANN::getPoints )
+    .method( "build_tree", &WANN::build_tree )
+    .method( "delete_tree", &WANN::delete_tree )
+    .method( "query", &WANN::query )
+    .method( "queryWANN", &WANN::queryWANN )
+    .method( "querySelf", &WANN::querySelf )
+    .method( "query_FR", &WANN::query_FR )
+    .method( "query_FR_ragged", &WANN::query_FR_ragged )
+    .method( "queryWANN_FR", &WANN::queryWANN_FR )
+    .method( "querySelf_FR", &WANN::querySelf_FR )
+    ;
+  }

@@ -19,8 +19,9 @@ value is set to the smaller of the number of columns in data}
 
 \item{eps}{Error bound: default of 0.0 implies exact nearest neighbour search}
 
-\item{radius}{Optional: Set to some non-zero positive number to do a fixed radius
-nearest neighbour search}
+\item{radius}{Optional: Only return points within a fixed radius.
+A negative number will return a \code{list} of variable length \code{vectors}
+rather than a \code{matrix} of width k.}
 }
 \value{
 A \code{list} of length 2 with elements:
